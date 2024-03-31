@@ -5,7 +5,7 @@ import {checkLoginGuard} from "../shared/guards/check-login.guard";
 
 const routes: Routes = [
     {
-        path: 'login', component: LoginComponent, canActivate: [checkLoginGuard]
+        path: '', component: LoginComponent, canActivate: [checkLoginGuard]
     }
 ];
 

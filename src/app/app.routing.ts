@@ -1,6 +1,6 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 
-import { FullComponent } from './layouts/full/full.component';
+import {FullComponent} from './layouts/full/full.component';
 
 export const AppRoutes: Routes = [
   {
@@ -25,7 +25,7 @@ export const AppRoutes: Routes = [
     ]
   },
   {
-    path:'auth',
-    loadChildren: () => import('./auth/auth.module').then(m=> m.AuthModule)
+    path: 'login',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   }
 ];

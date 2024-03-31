@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {LocalStorageService} from "../../shared/services/local-storage.service";
 import {Router} from "@angular/router";
 import {SessionConstant} from "../../shared/constants/session.constant";
-import {User} from "../../shared/models/user.model";
+import {UserModel} from "../../shared/models/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,7 @@ export class AuthService {
 
   user() {
 
-    const user: User = this._serviceStorage.get(SessionConstant.USER);
+    const user: UserModel = this._serviceStorage.get(SessionConstant.USER);
     return user;
 
   }
@@ -46,6 +46,6 @@ export class AuthService {
   finalizeSession() {
     this.deleteCredentials();
 
-    this.router.navigateByUrl("/login");
+    this.router.navigate(['login'])
   }
 }

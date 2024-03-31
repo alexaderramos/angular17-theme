@@ -1,4 +1,4 @@
-export class User {
+export class UserModel {
   constructor(
     public id: string,
     public username: string,
@@ -9,7 +9,8 @@ export class User {
     public token: string,
     public active: string,
     public role_id: string,
-    public permissions: string[]
+    public permissions: string[],
+    public avatar?: string
   ) {
   }
 }

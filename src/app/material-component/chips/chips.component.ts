@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { DemoMaterialModule } from 'src/app/demo-material-module';
+import { MaterialModule } from 'src/app/material-module';
 import { ThemePalette } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgFor } from '@angular/common';
@@ -24,7 +24,7 @@ export interface Fruit {
 @Component({
   selector: 'app-chips',
   standalone: true,
-  imports: [DemoMaterialModule, MatFormFieldModule, MatChipsModule, NgFor, MatIconModule],
+  imports: [MaterialModule, MatFormFieldModule, MatChipsModule, NgFor, MatIconModule],
   templateUrl: './chips.component.html',
   styleUrls: ['./chips.component.scss']
 })

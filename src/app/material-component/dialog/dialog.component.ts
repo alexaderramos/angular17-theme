@@ -5,12 +5,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { DemoMaterialModule } from 'src/app/demo-material-module';
+import { MaterialModule } from 'src/app/material-module';
 
 @Component({
   selector: 'app-dialog-overview-example-dialog',
   standalone: true,
-  imports: [DemoMaterialModule, FormsModule, NgIf, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule],
+  imports: [MaterialModule, FormsModule, NgIf, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule],
   template: `<h1 mat-dialog-title>Hi {{data.name}}</h1>
 <div mat-dialog-content>
   <p>What's your favorite animal?</p>
@@ -37,7 +37,7 @@ export class DialogOverviewExampleDialogComponent {
 @Component({
   selector: 'app-dialog',
   standalone: true,
-  imports: [DialogOverviewExampleDialogComponent, DemoMaterialModule, NgIf, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [DialogOverviewExampleDialogComponent, MaterialModule, NgIf, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './dialog.component.html',
   styleUrls: ['./dialog.component.scss']
 })

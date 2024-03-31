@@ -1,12 +1,12 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { DemoMaterialModule } from 'src/app/demo-material-module';
+import { MaterialModule } from 'src/app/material-module';
 
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [DemoMaterialModule, MatGridListModule, NgFor],
+  imports: [MaterialModule, MatGridListModule, NgFor],
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })

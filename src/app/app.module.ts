@@ -3,7 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpClient,
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptors
+} from '@angular/common/http';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { AppRoutes } from './app.routing';
 import { AppComponent } from './app.component';
@@ -12,10 +18,11 @@ import { FullComponent } from './layouts/full/full.component';
 import { AppHeaderComponent } from './layouts/full/header/header.component';
 import { AppSidebarComponent } from './layouts/full/sidebar/sidebar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DemoMaterialModule } from './demo-material-module';
+import { MaterialModule } from './material-module';
 
 import { SharedModule } from './shared/shared.module';
 import { SpinnerComponent } from './shared/spinner.component';
+import {tokenInterceptor}  from './shared/interceptors/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -23,12 +30,12 @@ import { SpinnerComponent } from './shared/spinner.component';
     FullComponent,
     AppHeaderComponent,
     SpinnerComponent,
-    
+
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    DemoMaterialModule,
+    MaterialModule,
     FormsModule,
     HttpClientModule,
     SharedModule,
@@ -39,7 +46,14 @@ import { SpinnerComponent } from './shared/spinner.component';
     {
       provide: LocationStrategy,
       useClass: PathLocationStrategy
-    }
+    },
+    provideHttpClient(
+      withInterceptors([tokenInterceptor])
+    )
+
+  ],
+  exports: [
+    SpinnerComponent
   ],
   bootstrap: [AppComponent]
 })

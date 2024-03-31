@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
-import { DemoMaterialModule } from 'src/app/demo-material-module';
+import { MaterialModule } from 'src/app/material-module';
 
 @Component({
   selector: 'app-slider',
   standalone: true,
-  imports: [DemoMaterialModule, FormsModule, ReactiveFormsModule, MatSliderModule],
+  imports: [MaterialModule, FormsModule, ReactiveFormsModule, MatSliderModule],
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.scss']
 })

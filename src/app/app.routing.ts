@@ -1,10 +1,18 @@
 import {Routes} from '@angular/router';
 
 import {FullComponent} from './layouts/full/full.component';
+import {checkAuthGuard} from "./shared/guards/check-auth.guard";
+import {checkLoginGuard} from "./shared/guards/check-login.guard";
 
 export const AppRoutes: Routes = [
   {
+    path: 'login',
+    canActivate:[checkLoginGuard],
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+  },
+  {
     path: '',
+    canActivate:[checkAuthGuard],
     component: FullComponent,
     children: [
       {
@@ -24,8 +32,6 @@ export const AppRoutes: Routes = [
 
     ]
   },
-  {
-    path: 'login',
-    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
-  }
+
+  { path: '**', pathMatch: 'full', redirectTo: 'login' },
 ];

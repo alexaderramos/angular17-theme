@@ -23,6 +23,7 @@ import { MaterialModule } from './material-module';
 import { SharedModule } from './shared/shared.module';
 import { SpinnerComponent } from './shared/spinner.component';
 import {tokenInterceptor}  from './shared/interceptors/token.interceptor';
+import {LoadingBarModule} from "@ngx-loading-bar/core";
 
 @NgModule({
   declarations: [
@@ -32,16 +33,17 @@ import {tokenInterceptor}  from './shared/interceptors/token.interceptor';
     SpinnerComponent,
 
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    FormsModule,
-    HttpClientModule,
-    SharedModule,
-    RouterModule.forRoot(AppRoutes),
-    AppSidebarComponent
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        FormsModule,
+        HttpClientModule,
+        SharedModule,
+        RouterModule.forRoot(AppRoutes),
+        AppSidebarComponent,
+        LoadingBarModule
+    ],
   providers: [
     {
       provide: LocationStrategy,

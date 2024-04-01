@@ -4,13 +4,15 @@ import {MaterialModule} from "../../material-module";
 import {ApiService} from "../../shared/services/api.service";
 import {AlertService} from "../../shared/services/alert.service";
 import {AuthService} from "../../core/auth/auth.service";
+import {LoadingBarModule, LoadingBarService} from "@ngx-loading-bar/core";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    LoadingBarModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -31,7 +33,8 @@ export class LoginComponent {
   constructor(
     private  api: ApiService,
     private alert: AlertService,
-    private auth: AuthService
+    private auth: AuthService,
+    private loadingBar: LoadingBarService
   ) {
   }
 
@@ -72,10 +75,10 @@ export class LoginComponent {
   }
 
   startLoading() {
-    // this.loadingBar.start();
+    this.loadingBar.start();
   }
 
   stopLoading() {
-    // this.loadingBar.complete();
+    this.loadingBar.complete();
   }
 }

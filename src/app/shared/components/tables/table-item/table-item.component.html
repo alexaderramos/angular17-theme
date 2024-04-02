@@ -1,1 +1,59 @@
-<p>table-item works!</p>
+<ng-container *ngIf="item?.second_id !== ''; else templateItem">
+  <ng-container *ngIf="value[item?.id]; else noneData">
+    {{ value[item?.id][item?.second_id] }}
+  </ng-container>
+</ng-container>
+
+<ng-template #templateItem>
+  <ng-container [ngSwitch]="item?.type">
+    <ng-container *ngSwitchCase="'text'">
+
+      <ng-container *ngIf="value[item?.id];else noneData">
+        {{ value[item?.id] }}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'time'">
+      <ng-container *ngIf="value[item?.id] != null;else noneData">
+        {{ value[item?.id] }}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'decimal'">
+      <ng-container *ngIf="value[item?.id] != null;else noneData">
+        {{ value[item?.id] | number:'.2-6' }}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'integer'">
+      <ng-container *ngIf="value[item?.id] != null;else noneData">
+        {{ value[item?.id]}}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'numeric'">
+      <ng-container *ngIf="value[item?.id] != null;else noneData">
+        {{ value[item?.id]}}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'date'">
+      <ng-container *ngIf="value[item?.id];else noneData">
+        {{ value[item?.id] | date:'dd/MM/yyyy' }}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'datetime'">
+      <ng-container *ngIf="value[item?.id];else noneData">
+        {{ value[item?.id] | date:'dd/MM/yyyy HH:mm' }}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'tinyINT'">
+      <ng-container *ngIf="value[item?.id] == 0; else activeTemplate">
+        Inactivo
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #noneData>
+  --
+</ng-template>
+
+<ng-template #activeTemplate>
+  Activo
+</ng-template>

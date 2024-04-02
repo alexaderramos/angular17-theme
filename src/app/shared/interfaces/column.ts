@@ -1,4 +1,4 @@
-export interface Colum {
+export interface Column {
   id: string;
   name: string;
   display: boolean;

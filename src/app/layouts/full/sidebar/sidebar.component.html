@@ -33,7 +33,7 @@
     @for(menuitem of m.menus; track menuitem.name){
       <mat-list-item appAccordionLink  routerLinkActive="selected">
         @if(menuitem.type === 'link'){
-          <a class="" appAccordionToggle [routerLink]="['/', menuitem.state]">
+          <a class="" appAccordionToggle [routerLink]="[menuitem.state]">
             <mat-icon>{{ menuitem.icon }}</mat-icon>
             <span>{{ menuitem.name }}</span>
             <span fxFlex></span>

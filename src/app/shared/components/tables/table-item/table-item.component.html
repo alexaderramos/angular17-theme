@@ -1,59 +1,45 @@
+@if(item ){
+  @if(item.second_id.length && item.id.length){
+    {{ value[item.id][item.second_id] ?? '--' }}
+  }@else if(item.id && value[item.id] != null ){
+    @switch (item.type){
+      @case ('text'){
+          {{ value[item.id] }}
+      }
+      @case ('time'){
+        {{ value[item.id] }}
+      }
+      @case ('decimal'){
+        {{ value[item.id] | number:'.2-6' }}
+      }
+      @case ('integer'){
+        {{ value[item.id] }}
+      }
+      @case ('numeric'){
+        {{ value[item.id] }}
+      }
+      @case ('date'){
+        {{ value[item.id] | date:'dd/MM/yyyy' }}
+      }
+      @case ('datetime'){
+        {{ value[item.id] | date:'dd/MM/yyyy HH:mm' }}
+      }
+      @case ('tinyINT'){
+        {{ value[item.id] ? 'Activo': 'Inactivo' }}
+      }
+      @default {
+        {{ value[item.id] }}
+      }
+    }
+  } @else {
+    <span>--</span>
+  }
+}
+
+<!--
 <ng-container *ngIf="item?.second_id !== ''; else templateItem">
   <ng-container *ngIf="value[item?.id]; else noneData">
     {{ value[item?.id][item?.second_id] }}
   </ng-container>
-</ng-container>
+</ng-container>-->
 
-<ng-template #templateItem>
-  <ng-container [ngSwitch]="item?.type">
-    <ng-container *ngSwitchCase="'text'">
-
-      <ng-container *ngIf="value[item?.id];else noneData">
-        {{ value[item?.id] }}
-      </ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="'time'">
-      <ng-container *ngIf="value[item?.id] != null;else noneData">
-        {{ value[item?.id] }}
-      </ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="'decimal'">
-      <ng-container *ngIf="value[item?.id] != null;else noneData">
-        {{ value[item?.id] | number:'.2-6' }}
-      </ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="'integer'">
-      <ng-container *ngIf="value[item?.id] != null;else noneData">
-        {{ value[item?.id]}}
-      </ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="'numeric'">
-      <ng-container *ngIf="value[item?.id] != null;else noneData">
-        {{ value[item?.id]}}
-      </ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="'date'">
-      <ng-container *ngIf="value[item?.id];else noneData">
-        {{ value[item?.id] | date:'dd/MM/yyyy' }}
-      </ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="'datetime'">
-      <ng-container *ngIf="value[item?.id];else noneData">
-        {{ value[item?.id] | date:'dd/MM/yyyy HH:mm' }}
-      </ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="'tinyINT'">
-      <ng-container *ngIf="value[item?.id] == 0; else activeTemplate">
-        Inactivo
-      </ng-container>
-    </ng-container>
-  </ng-container>
-</ng-template>
-
-<ng-template #noneData>
-  --
-</ng-template>
-
-<ng-template #activeTemplate>
-  Activo
-</ng-template>

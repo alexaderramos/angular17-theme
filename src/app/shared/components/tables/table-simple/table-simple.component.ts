@@ -16,6 +16,7 @@ import {FilterOnePipe} from "../../../pipes/filter-one.pipe";
 import {TableSortDirective} from "../../../directives/table-sort.directive";
 import {NgxPaginationModule} from "ngx-pagination";
 import {TableItemComponent} from "../table-item/table-item.component";
+import {ForbiddenPageComponent} from "../../../error-pages/forbidden-page/forbidden-page.component";
 
 @Component({
   selector: 'app-table-simple',
@@ -31,7 +32,8 @@ import {TableItemComponent} from "../table-item/table-item.component";
     NgClass,
     NgxPaginationModule,
     NgForOf,
-    TableItemComponent
+    TableItemComponent,
+    ForbiddenPageComponent
   ],
   templateUrl: './table-simple.component.html',
   styleUrl: './table-simple.component.scss'
@@ -197,6 +199,7 @@ export class TableSimpleComponent implements OnInit, OnDestroy {
   }
 
   selectAll(results: any []) {
+    console.log(results)
 
     this.listDataFilter = results;
 
@@ -257,13 +260,12 @@ export class TableSimpleComponent implements OnInit, OnDestroy {
     }
 
     if (this.listDataFilter.length == 0) {
-      // listFilter = listFilter.filter((x) => x.check == true);
-      this.sAlert.info(`No hay registros para seleccionar`);
+      listFilter = listFilter.filter((x) => x.check == true);
     } else {
       listFilter = this.listDataFilter.filter((x) => x.check == true);
-      if (listFilter.length == 0) return;
-      this.sAlert.info(`Has seleccionado ${listFilter.length} registros`);
     }
+    if (listFilter.length == 0) return;
+    this.sAlert.info(`Has seleccionado ${listFilter.length} registros`);
 
   }
 

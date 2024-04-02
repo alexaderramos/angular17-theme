@@ -17,13 +17,13 @@ const MENUITEMS: MenuGroups[] = [
   {
     name:'',
     menus:[
-      { state: 'dashboard', name: 'Dashboard', type: 'link', icon: 'av_timer' },
+      { state: '/dashboard', name: 'Dashboard', type: 'link', icon: 'av_timer' },
     ]
   },
   {
     name:'SEGURIDAD',
     menus:[
-      { state: 'button', name: 'Usuarios', type: 'link', icon: 'av_timer' },
+      { state: '/manage-access/users', name: 'Usuarios', type: 'link', icon: 'av_timer' },
     ]
   },
 

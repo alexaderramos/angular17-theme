@@ -1,3 +1,24 @@
-<div class="user">
+<mat-card>
+  <mat-card-content>
+    <mat-card-title>Usuarios registrados</mat-card-title>
 
-</div>
+
+    <app-table-simple
+
+      [actionFixed]="false"
+      [moduleName]="'manage_access'"
+      [submoduleName]="'users'"
+      [nameModel]="'user'"
+      [columns]="[]"
+      [classHeight]="'other'"
+      [listData]="[]"
+      [getDataUrl]="'user/get_all'"
+      [downloadUrl]="'user/download_report'"
+      [deleteUrl]="'user/delete/'"
+      [updateUrl]="'manage-access/users/update/'"
+      [newUrl]="'manage-access/users/register'"
+    >
+
+    </app-table-simple>
+  </mat-card-content>
+</mat-card>

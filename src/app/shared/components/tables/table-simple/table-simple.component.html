@@ -1,1 +1,371 @@
-<p>table-simple works!</p>
+<app-forbidden-page *ngIf="!sPermission.canView();else canView"></app-forbidden-page>
+
+<ng-template #canView>
+  <div class="flex content-btn pbot">
+    <div
+      class="flex align-center flex-wrap left-btns"
+      *ngIf="showFilter; else emptyDiv"
+    >
+      <div *ngIf="showFilterDate && campaignOne">
+        <mat-form-field class="date_range_custom" appearance="fill">
+          <mat-date-range-input
+            [formGroup]="campaignOne"
+            [rangePicker]="campaignOnePicker"
+            [comparisonStart]="campaignOne?.value.start"
+            [comparisonEnd]="campaignOne?.value.end"
+          >
+            <input
+              matStartDate
+              placeholder="Start date"
+              formControlName="start"
+            />
+            <input
+              matEndDate
+              placeholder="End date"
+              formControlName="end"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="campaignOnePicker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker
+            #campaignOnePicker
+          ></mat-date-range-picker>
+
+          <img
+            src="assets/img/calendar.svg"
+            class="icon-date-range"
+            alt=""
+          />
+        </mat-form-field>
+      </div>
+      <div class="pr-4 mb-4 mt-4" *ngIf="showFilter_inputs">
+        <div class="input-icons">
+          <span class="search"></span>
+          <input
+            type="text"
+            class="input input--search"
+            [(ngModel)]="filterSearch"
+            placeholder="Buscar"
+            (change)="positionFirstPage()"
+          />
+        </div>
+      </div>
+      <div class="pr-4 mb-4 mt-4" *ngIf="showFilter_inputs">
+        <div class="flex select-input-group">
+          <input
+            class="select-input"
+            type="text"
+            value="Buscar Por: "
+            disabled
+          />
+          <ng-select
+            [(ngModel)]="filterBy"
+            (change)="setFilterByModel()"
+            class="select-custom"
+            [searchable]="false"
+            [clearable]="false"
+            notFoundText="No se encontraron resultados"
+          >
+            <ng-container *ngFor="let item of columns; let i = index">
+              <ng-option
+                *ngIf="item.active && item.filter"
+                [value]="i"
+              >{{ item.name }}</ng-option
+              >
+            </ng-container>
+          </ng-select>
+        </div>
+      </div>
+      <div class="mb-4 mt-4">
+        <button class="bot bot__light" type="button" (click)="openDialog()">
+          Mostrar
+        </button>
+      </div>
+    </div>
+
+    <div class="flex content-flex-end flex-wrap right-btns">
+      <div class="pr-4 mb-4 mt-4">
+        <button class="bot bot__light" type="button" (click)="download()">
+          Descargar
+        </button>
+      </div>
+      <div class="pr-4 mb-4 mt-4" *ngIf="bulkUploadUrl !== ''">
+        <button class="bot bot__light" type="button" (click)="bulkUpload()">
+          Subir
+        </button>
+      </div>
+      <div class="pr-4 mb-4 mt-4" *ngIf="gridUploadUrl !== ''">
+        <button class="bot bot__light" type="button" (click)="gridUpload()">
+          Grilla
+        </button>
+      </div>
+      <div class="mb-4 mt-4">
+        <button class="bot bot__solid" type="button" (click)="new()">
+          Nuevo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loadingData">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loadingData">
+    <div
+      class="table-responsive table-bordered h-fixed {{classHeight}} "
+      *ngIf="
+            listData
+                | filterOne
+                    : filterSearch
+                    : filterByModel
+                    : campaignOne?.value as results
+        "
+    >
+      <table>
+        <thead class="fixed">
+        <tr>
+          <th class="check check-th" style="padding-left: 13px;padding-right: 13px; max-width: 10px" >
+            <mat-checkbox
+              color="primary"
+              [indeterminate]="checkboxUnd"
+              (change)="selectAll(results)"
+              [(ngModel)]="checkboxAll"
+            ></mat-checkbox>
+          </th>
+
+          <ng-container *ngFor="let column of columns">
+            <th *ngIf="column.display" [appTableSort]="results" data-order="desc" [attr.data-id]="column.id"
+                [attr.data-second_id]="column.second_id">
+                            <span style="white-space: nowrap"
+                                  [ngClass]="column.id === 'comment' || column.id == 'comments' ? 'th-comment':'' ">
+                                {{ column.name }}
+                              <span *ngIf="!column.unit2; else unit2">
+                                    {{ column.unit }}</span
+                              >
+
+                                <ng-template #unit2>
+                                    <span [innerHTML]="column.unit2"> </span>
+                                </ng-template>
+                            </span>
+            </th>
+          </ng-container>
+
+          <th  [ngClass]="{ 'column-fixed': actionFixed }">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container>
+          <tr
+            *ngFor="
+                            let item of results
+                                | paginate
+                                    : {
+                                          itemsPerPage: itemsPerPage,
+                                          currentPage: currentPage,
+                                          id: nameModel
+                                      };
+                            trackBy: identifyTrack;
+                            let i = index
+                        "
+          >
+            <td class="check check-td" style="padding-left: 13px;padding-right: 13px;">
+              <mat-checkbox
+                color="primary"
+                [(ngModel)]="item.check"
+                (change)="verifyChecked()"
+              ></mat-checkbox>
+            </td>
+
+            <ng-container *ngFor="let column of columns">
+              <td *ngIf="column.display"
+                  [style]="column.styles == null ? tableStyles[column.type || 'default']: column.styles"
+                  [ngClass]="{
+                            'td-comment': (column.id === 'comment' || column.id == 'comments'),
+                            'max': (column.id === 'comment' || column.id == 'comments'),
+                            'empty': item[column.id] ==null
+                            }">
+                <app-table-item [ngClass]="column.id === 'comment' || column.id == 'comments' ? 'item-comment':'' "
+                               [style]="column.styles == null ? tableStyles[column.type || 'default']: column.styles"
+                               [item]="column"
+                               [value]="item"
+                ></app-table-item>
+              </td>
+            </ng-container>
+
+            <td class="" [ngClass]="{ 'column-fixed': actionFixed }">
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                aria-label="Example icon-button with a menu"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+
+              <mat-menu #menu="matMenu">
+                <ng-container *ngFor="let option of options">
+                  <button
+                    mat-menu-item
+                    (click)="goToOption(option, item)"
+                  >
+                    <mat-icon>{{ option.icon }}</mat-icon>
+                    <span>{{ option.name }}</span>
+                  </button>
+                </ng-container>
+                <button *ngIf="updateUrl !== '' && updateUrl !== 'modal'"
+                        mat-menu-item
+                        (click)="goToUpdate(item)"
+                >
+                  <mat-icon>mode_edit</mat-icon>
+                  <span>Editar</span>
+                </button>
+
+                <button
+                  *ngIf="deleteUrl !== ''"
+                  mat-menu-item
+                  (click)="openDialogDelete(item)"
+                >
+                  <mat-icon>delete</mat-icon>
+                  <span>Eliminar</span>
+                </button>
+
+              </mat-menu>
+            </td>
+          </tr>
+
+          <!--Crear n registros definidos pro minRegTable-->
+          <ng-container *ngIf="calculateNumberRecords(results) > 0">
+            <tr
+              *ngFor="
+                                let reg of [].constructor(
+                                    calculateNumberRecords(results)
+                                )
+                            "
+            >
+              <td class="check check-td" style="padding-left: 13px;padding-right: 13px; min-width: 43px"></td>
+              <ng-container *ngFor="let column of columns">
+                <td
+                  *ngIf="column.display"
+                  class="min-h-table"
+                ></td>
+              </ng-container>
+              <td class="min-h-table"   [ngClass]="{ 'column-fixed': actionFixed }"  ></td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        </tbody>
+      </table>
+      <!--<div *ngIf="results.length == 0" class="data-empty">-->
+      <!--<mat-icon class="icon">search_off</mat-icon>-->
+      <!--We searched far and wide. Unfortunately, no results were found.-->
+      <!--</div>-->
+    </div>
+  </div>
+
+  <div class="footer pbot">
+    <div>
+      <span class="mr-3 footer__text">Mostrando</span>
+      <span>
+            <select
+              name="viewing"
+              id="viewing"
+              class="rounded"
+              [(ngModel)]="itemsPerPage"
+              (change)="positionFirstPage()"
+            >
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+            </select>
+        </span>
+      <span class="ml-3 footer__text"
+      >de {{ listData.length + " " + viewingPaginate }}
+        </span>
+    </div>
+    <div>
+      <pagination-controls
+        [autoHide]="false"
+        (pageChange)="currentPage = $event"
+        [id]="nameModel"
+      ></pagination-controls>
+    </div>
+  </div>
+
+</ng-template>
+<ng-template #delete_item>
+  <h2 mat-dialog-title>Eliminar registro</h2>
+
+  <mat-dialog-content class="mat-typography">
+    <p>¿Está seguro de querer eliminar el registro?</p>
+  </mat-dialog-content>
+  <div mat-dialog-actions class="justify-center">
+    <button mat-button mat-dialog-close>No</button>
+    <button mat-button (click)="deleteItem()">Yes</button>
+  </div>
+</ng-template>
+
+<ng-template #noRecords>
+  <div class="data-empty">
+    <mat-icon class="icon">search_off</mat-icon>
+    No se encontraron registros para mostrar
+  </div>
+</ng-template>
+<ng-template #modal_view>
+  <h2 mat-dialog-title>Configuración de columnas</h2>
+
+  <mat-dialog-content class="mat-typography">
+    <p>Seleccione las columnas a mostrar</p>
+
+    <ng-container *ngFor="let column of columns">
+      <p>
+        <mat-checkbox [(ngModel)]="column.display" [color]="'primary'">
+          {{ column.name }}
+        </mat-checkbox>
+      </p>
+    </ng-container>
+  </mat-dialog-content>
+  <div mat-dialog-actions class="justify-flex-end">
+    <button mat-button mat-dialog-close>Cerrar</button>
+  </div>
+</ng-template>
+
+<ng-template #emptyDiv>
+  <div></div>
+</ng-template>
+
+
+<ng-template #modal_loading>
+
+  <h2 mat-dialog-title></h2>
+
+  <mat-dialog-content class="mat-typography">
+
+    <section class="spinner-center">
+      <mat-spinner diameter="50"></mat-spinner>
+      <span>
+				{{messageLoading}}
+			</span>
+    </section>
+
+  </mat-dialog-content>
+</ng-template>
+
+
+<ng-template #modal_information>
+  <!--  <h2 mat-dialog-title>Information</h2>-->
+  <mat-dialog-content class="mat-typography">
+    @if (messageInformation !==''){
+      <p>{{messageInformation}}</p>
+    }@else{
+      No disponible
+    }
+  </mat-dialog-content>
+  <div mat-dialog-actions class="justify-flex-end">
+    <button mat-button mat-dialog-close>Cerrar</button>
+  </div>
+</ng-template>
+

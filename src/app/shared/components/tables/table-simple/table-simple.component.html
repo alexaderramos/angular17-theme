@@ -2,6 +2,7 @@
 
 <ng-template #canView>
   <div class="flex content-btn pbot">
+    <mat-icon>more_vert</mat-icon>
     <div
       class="flex align-center flex-wrap left-btns"
       *ngIf="showFilter; else emptyDiv"
@@ -33,23 +34,26 @@
             #campaignOnePicker
           ></mat-date-range-picker>
 
-          <img
+          <!--<img
             src="assets/img/calendar.svg"
             class="icon-date-range"
             alt=""
-          />
+          />-->
         </mat-form-field>
       </div>
       <div class="pr-4 mb-4 mt-4" *ngIf="showFilter_inputs">
         <div class="input-icons">
-          <span class="search"></span>
-          <input
-            type="text"
-            class="input input--search"
-            [(ngModel)]="filterSearch"
-            placeholder="Buscar"
-            (change)="positionFirstPage()"
-          />
+          <mat-form-field>
+            <input
+              matInput
+              type="text"
+              class="input input--search"
+              [(ngModel)]="filterSearch"
+              placeholder="Buscar"
+              (change)="positionFirstPage()"
+            />
+          </mat-form-field>
+
         </div>
       </div>
       <div class="pr-4 mb-4 mt-4" *ngIf="showFilter_inputs">
@@ -79,7 +83,7 @@
         </div>
       </div>
       <div class="mb-4 mt-4">
-        <button class="bot bot__light" type="button" (click)="openDialog()">
+        <button mat-raised-button color="accent" class="bot bot__light" type="button" (click)="openDialog()">
           Mostrar
         </button>
       </div>
@@ -87,12 +91,12 @@
 
     <div class="flex content-flex-end flex-wrap right-btns">
       <div class="pr-4 mb-4 mt-4">
-        <button class="bot bot__light" type="button" (click)="download()">
+        <button mat-raised-button color="primary" class="bot bot__light" type="button" (click)="download()">
           Descargar
         </button>
       </div>
       <div class="pr-4 mb-4 mt-4" *ngIf="bulkUploadUrl !== ''">
-        <button class="bot bot__light" type="button" (click)="bulkUpload()">
+        <button mat-raised-button color="primary" class="bot bot__light" type="button" (click)="bulkUpload()">
           Subir
         </button>
       </div>
@@ -102,7 +106,7 @@
         </button>
       </div>
       <div class="mb-4 mt-4">
-        <button class="bot bot__solid" type="button" (click)="new()">
+        <button mat-raised-button color="primary" class="bot bot__solid" type="button" (click)="new()">
           Nuevo
         </button>
       </div>
@@ -125,7 +129,7 @@
         "
     >
       <table>
-        <thead class="fixed">
+        <thead class="">
         <tr>
           <th class="check check-th" style="padding-left: 13px;padding-right: 13px; max-width: 10px" >
             <mat-checkbox

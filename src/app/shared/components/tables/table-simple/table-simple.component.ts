@@ -18,6 +18,7 @@ import {NgxPaginationModule} from "ngx-pagination";
 import {TableItemComponent} from "../table-item/table-item.component";
 import {ForbiddenPageComponent} from "../../../error-pages/forbidden-page/forbidden-page.component";
 
+
 @Component({
   selector: 'app-table-simple',
   standalone: true,

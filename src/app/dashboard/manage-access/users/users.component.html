@@ -1,24 +1,30 @@
-<mat-card>
-  <mat-card-content>
-    <mat-card-title>Usuarios registrados</mat-card-title>
+<app-table-material
+  title="Usuarios"
+  module="manage_access"
+  subModule="users"
+  getAPI="user/get_all"
+  downloadAPI="user/download_report"
+  deleteAPI="user/delete/"
+  updateROUTE="manage-access/users/update/"
+  createROUTE="manage-access/users/register"
+
+></app-table-material>
 
 
-    <app-table-simple
+<!-- <app-table-simple
 
-      [actionFixed]="false"
-      [moduleName]="'manage_access'"
-      [submoduleName]="'users'"
-      [nameModel]="'user'"
-      [columns]="[]"
-      [classHeight]="'other'"
-      [listData]="[]"
-      [getDataUrl]="'user/get_all'"
-      [downloadUrl]="'user/download_report'"
-      [deleteUrl]="'user/delete/'"
-      [updateUrl]="'manage-access/users/update/'"
-      [newUrl]="'manage-access/users/register'"
-    >
+   [actionFixed]="false"
+   [moduleName]="'manage_access'"
+   [submoduleName]="'users'"
+   [nameModel]="'user'"
+   [columns]="[]"
+   [classHeight]="'other'"
+   [listData]="[]"
+   [getDataUrl]="'user/get_all'"
+   [downloadUrl]="'user/download_report'"
+   [deleteUrl]="'user/delete/'"
+   [updateUrl]="'manage-access/users/update/'"
+   [newUrl]="'manage-access/users/register'"
+ >
 
-    </app-table-simple>
-  </mat-card-content>
-</mat-card>
+ </app-table-simple>-->

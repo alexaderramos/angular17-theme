@@ -26,6 +26,12 @@ const MENUITEMS: MenuGroups[] = [
       { state: '/manage-access/users', name: 'Usuarios', type: 'link', icon: 'av_timer' },
     ]
   },
+  {
+    name:'CONFIGURACIÓN',
+    menus:[
+      { state: '/settings/commissions', name: 'Comisiones', type: 'link', icon: 'monetization_on' },
+    ]
+  },
 
  /* { state: 'dashboard', name: 'Dashboard', type: 'link', icon: 'av_timer' },
   { state: 'button', type: 'link', name: 'Buttons', icon: 'crop_7_5' },

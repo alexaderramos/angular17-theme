@@ -6,6 +6,7 @@ import {AuthService} from "../../core/auth/auth.service";
 import {LocalStorageService} from "./local-storage.service";
 import {AlertService} from "./alert.service";
 import {SessionConstant as cSESSION} from "../constants/session.constant";
+import {Params} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -38,12 +39,16 @@ export class ApiService {
   }
 
 
-  async get(url: string): Promise<any> {
+  async get(url: string, params?: Params): Promise<any> {
     this.unsubscribe$ = new Subject<void>();
 
     try {
 
-      const res = await this.http.get(this.urlServer + url, {headers: this.headers})
+      const res = await this.http.get(this.urlServer + url,
+        {
+          headers: this.headers,
+          params: params
+        })
         .pipe(takeUntil(this.unsubscribe$)) // Cancela la petición cuando unsubscribe$ emita un valor
         .toPromise();
       return Promise.resolve(res);

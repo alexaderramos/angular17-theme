@@ -1,0 +1,298 @@
+<mat-card>
+  <mat-card-content>
+
+    <div class="d-flex flex-wrap">
+      <div>
+        <mat-card-title *ngIf="title">{{ title }}</mat-card-title>
+        <mat-card-subtitle *ngIf="description.length">{{ description }}</mat-card-subtitle>
+      </div>
+      <div class="ml-auto">
+        <button matTooltip="Visibilidad de columnas" mat-mini-fab color="primary" (click)="openDialog()">
+          <mat-icon>settings</mat-icon>
+        </button>
+      </div>
+    </div>
+
+
+    <div class="w-100 mt-[30px]">
+      <div class="flex md:flex-row flex-col gap-2 justify-between align-items-center ">
+
+        <div class="md:w-[300px] w-full">
+
+
+          @switch (searchByColumn?.type) {
+
+            @case ('date') {
+              <ng-template id="date-pick" *ngTemplateOutlet="inputDatePicker"></ng-template>
+            }
+            @case ('datetime') {
+              <ng-template id="datet-pick" *ngTemplateOutlet="inputDatePicker"></ng-template>
+            }
+            @default {
+              <mat-form-field>
+                <mat-label>Buscar {{ searchByText }}</mat-label>
+                <input matInput
+                       [(ngModel)]="search"
+                       (keyup)="changeInput($event)" placeholder="Buscar">
+                <mat-icon color="primary" *ngIf="search.length > 0" (click)="search='';filterData()" matSuffix>cancel
+                </mat-icon>
+                <button [disabled]="columns.length == 0" mat-icon-button matIconSuffix [matMenuTriggerFor]="menu">
+                  <mat-icon color="primary">filter_list
+                  </mat-icon>
+                </button>
+              </mat-form-field>
+            }
+          }
+
+          <mat-menu #menu="matMenu">
+            @for (column of columns; track column.id) {
+              <button mat-menu-item *ngIf="column.active && column.filter" (click)="selectSearchBy(column)">
+
+                @if (searchByColumn && searchByColumn.id == column.id) {
+                  <mat-icon color="primary">radio_button_checked</mat-icon>
+                } @else {
+                  <mat-icon>radio_button_unchecked</mat-icon>
+                }
+                <span>{{ column.name }}</span>
+              </button>
+            }
+          </mat-menu>
+        </div>
+
+        @if (showFilterByDateRange && campaignOne) {
+          <div class="md:w-[300px] w-full">
+            <mat-form-field class="date_range_custom" appearance="fill">
+              <mat-date-range-input
+                [formGroup]="campaignOne"
+                [rangePicker]="campaignOnePicker"
+                [comparisonStart]="campaignOne.value.start"
+                [comparisonEnd]="campaignOne.value.end"
+              >
+                <input
+                  matStartDate
+                  placeholder="Start date"
+                  formControlName="start"
+                />
+                <input
+                  matEndDate
+                  placeholder="End date"
+                  formControlName="end"
+                  (dateChange)="changeDateRange()"
+                />
+              </mat-date-range-input>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="campaignOnePicker"
+              ></mat-datepicker-toggle>
+              <mat-date-range-picker
+                #campaignOnePicker
+              ></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+        }
+
+
+      </div>
+
+      <div class="flex justify-end align-items-center gap-1 mb-[20px]">
+        <button
+          *ngIf="downloadAPI.length"
+          (click)="download()"
+          matTooltip="Exportar"
+          mat-mini-fab>
+          <mat-icon slot="icon">file_download</mat-icon>
+        </button>
+        <button
+          (click)="bulkUpload()"
+          *ngIf="bulkUploadROUTE.length"
+          matTooltip="Importar"
+          mat-mini-fab>
+          <mat-icon>cloud_upload</mat-icon>
+        </button>
+        <button *ngIf="gridUploadROUTE.length" matTooltip="Cargar en grilla"
+                (click)="gridUpload()"
+                mat-mini-fab>
+          <mat-icon>grid_on</mat-icon>
+        </button>
+        <button *ngIf="createROUTE.length"
+                (click)="new()"
+                matTooltip="Nuevo"
+                mat-mini-fab>
+          <mat-icon>add</mat-icon>
+        </button>
+
+      </div>
+
+
+    </div>
+
+
+    <div class="w-full overflow-auto table-bordered">
+      <table
+        class=" "
+        mat-table #table
+        [dataSource]="dataSource" matSort>
+        <!-- Checkbox en el header -->
+
+
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>
+            Action
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              aria-label="Example icon-button with a menu"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+
+            <mat-menu #menu="matMenu">
+              <button
+                mat-menu-item
+                (click)="goToUpdate(row)"
+              >
+                <mat-icon>mode_edit</mat-icon>
+                <span>Edit</span>
+              </button>
+
+              <button
+                *ngIf="deleteAPI !== ''"
+                mat-menu-item
+                (click)="openDialogDelete(row)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+              <ng-container *ngFor="let option of options">
+                <button
+                  mat-menu-item
+                  (click)="goToOption(option, row)"
+                >
+                  <mat-icon>{{ option.icon }}</mat-icon>
+                  <span>{{ option.name }}</span>
+                </button>
+              </ng-container>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+
+        <!-- Columnas -->
+        <ng-container *ngFor="let column of columns; ">
+          <ng-container [matColumnDef]="column.id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.name }}</th>
+            <td mat-cell
+                *matCellDef="let element"
+                [style]="column.styles == null ? tableStyles[column.type || 'default'] : column.styles"
+            >
+              <!--{{ element[column.id] }}-->
+              <app-table-item [ngClass]="column.id === 'comment' || column.id == 'comments' ? 'item-comment':'' "
+                              [style]="column.styles == null ? tableStyles[column.type || 'default']: column.styles"
+                              [item]="column"
+                              [value]="element"
+              ></app-table-item>
+            </td>
+          </ng-container>
+        </ng-container>
+
+        <!-- Filas -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+        </tr>
+
+
+      </table>
+    </div>
+
+
+    @if (this.data.length > 0) {
+      <div class=" flex justify-items-center align-items-center mt-[30px]">
+        <mat-paginator
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          [showFirstLastButtons]="true">
+        </mat-paginator>
+      </div>
+    }
+
+  </mat-card-content>
+</mat-card>
+
+
+<ng-template #modalView>
+  <h2 mat-dialog-title>Configuración de columnas</h2>
+
+  <mat-dialog-content class="mat-typography">
+    <p>Seleccione las columnas a mostrar</p>
+
+    <ng-container *ngFor="let column of columns">
+      <p>
+        <mat-checkbox (change)="updateDisplayedColumns()" [(ngModel)]="column.display" [color]="'primary'">
+          {{ column.name }}
+        </mat-checkbox>
+      </p>
+    </ng-container>
+  </mat-dialog-content>
+  <div mat-dialog-actions class=" w-100 content-end">
+    <div class="flex justify-items-center align-items-center">
+      <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #inputDatePicker
+>
+  <mat-form-field>
+    <mat-label>Buscar {{ searchByText }}</mat-label>
+    <input matInput [matDatepicker]="picker" (dateChange)="filterData()" [(ngModel)]="searchDate">
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <button [disabled]="columns.length == 0" mat-icon-button matIconSuffix [matMenuTriggerFor]="menu">
+      <mat-icon color="primary">filter_list
+      </mat-icon>
+    </button>
+  </mat-form-field>
+</ng-template>
+
+
+<ng-template #modalLoading>
+  <h2 mat-dialog-title></h2>
+  <mat-dialog-content class="mat-typography">
+    <section class="spinner-center">
+      <mat-spinner diameter="50"></mat-spinner>
+      <span>
+				{{ messageLoading }}
+			</span>
+    </section>
+  </mat-dialog-content>
+</ng-template>
+
+<ng-template #modalDelete>
+  <h2 mat-dialog-title>Delete Record</h2>
+
+  <mat-dialog-content class="mat-typography">
+    <p>Sure you want to delete the record?</p>
+  </mat-dialog-content>
+  <div mat-dialog-actions class="justify-center">
+    <button mat-button mat-dialog-close>No</button>
+    <button mat-button (click)="deleteItem()">Yes</button>
+  </div>
+</ng-template>

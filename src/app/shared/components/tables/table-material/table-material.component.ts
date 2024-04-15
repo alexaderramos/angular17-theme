@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Input,
+  Input, OnDestroy,
   OnInit,
   Output,
   TemplateRef,
@@ -34,12 +34,12 @@ import {OptionTable} from "../../../interfaces/option-table";
   templateUrl: './table-material.component.html',
   styleUrl: './table-material.component.scss'
 })
-export class TableMaterialComponent implements OnInit, AfterViewInit {
+export class TableMaterialComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   @Input() title: string = '';
   @Input() description: string = '';
-  @Input() showFilterByDateRange: boolean = true;
+  @Input() showFilterByDateRange: boolean = false;
   @Input() showActionColumn: boolean = true;
 
   @Input() getAPI: string = '';
@@ -53,7 +53,7 @@ export class TableMaterialComponent implements OnInit, AfterViewInit {
   @Input() module: string = '';
   @Input() subModule: string = '';
 
-  @Input() requiredPermissions: boolean = false
+  @Input() requiredPermissions: boolean = true
 
   @Input() idEditable: string = '';
   @Input() editOnModal: boolean = false;
@@ -507,6 +507,10 @@ export class TableMaterialComponent implements OnInit, AfterViewInit {
         option.callback(item);
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.api.cancelPendingRequests();
   }
 
 

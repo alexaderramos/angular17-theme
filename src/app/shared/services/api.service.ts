@@ -1,5 +1,5 @@
 import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {environment} from "../../../enviroments/enviroment";
 import {Subject, takeUntil} from "rxjs";
 import {AuthService} from "../../core/auth/auth.service";
@@ -11,7 +11,7 @@ import {Params} from "@angular/router";
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class ApiService implements OnDestroy{
 
 
   private unsubscribe$ = new Subject<void>();

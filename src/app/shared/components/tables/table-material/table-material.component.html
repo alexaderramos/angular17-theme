@@ -94,7 +94,7 @@
 
       </div>
 
-      <div class="flex justify-end align-items-center gap-1 mb-[20px]">
+      <div class="flex justify-end align-items-center gap-2 mb-[20px]">
         <button
           *ngIf="downloadAPI.length"
           (click)="download()"
@@ -116,6 +116,7 @@
         </button>
         <button *ngIf="createROUTE.length"
                 (click)="new()"
+                color="primary"
                 matTooltip="Nuevo"
                 mat-mini-fab>
           <mat-icon>add</mat-icon>
